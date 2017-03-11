@@ -94,7 +94,7 @@ function pkey_encrypt($string, $public_key) {
 
 function pkey_decrypt($string, $private_key) {
 
-
+    $cipertext = base64_decode($string);
    openssl_private_decrypt($string, $decrypted, $private_key);
 
   return $decrypted;
@@ -120,7 +120,10 @@ function verify_signature($data, $signature, $public_key) {
   $raw_signature = base64_decode($signature);
   $result = openssl_verify($data, $raw_signature, $public_key);
   return $result;
-  // returns 0 if data and signature do not match
+  // returns 1 if data and signature do not match
+     $modified_data = $data . "extra content";
+    $result = openssl_verify($modified_data, $signature, $public_key);
+    return $result;
   //return 'RK, pym oays onicvr. Iuw bkzhvbw uedf pke conll rt ZV nzxbhz.';
 }
 
