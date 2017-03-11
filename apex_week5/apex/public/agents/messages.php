@@ -49,7 +49,20 @@
           // Oooops.
           // My finger accidentally hit the delete-key.
           // Sorry, APEX!!!
-          
+          $sender_result = find_agent_by_id($message['sender_id']);
+          $sender = db_fetch_assoc($sender_result);
+          $cipher = $message['cipher_text'];
+          $signature = $message['signature'];
+          if(verify_signature($cipher, $signature, $sender['public_key']) == 1){
+            $validity_text = "Valid";
+          } else{
+            $validity_text = "Not Valid";
+          }
+          if($message['recipient_id'] == $current_user['id']){
+            $message_text = pkey_decrypt($cipher, $agent['private_key']);
+          } else{
+            $message_text = $cipher;
+          }
         ?>
         <tr>
           <td><?php echo h(strftime('%b %d, %Y at %H:%M', $created_at)); ?></td>
